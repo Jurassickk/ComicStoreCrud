@@ -30,6 +30,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Token> tokens;
 
+    public User(String name, String email, String encode) {
+    }
+
     public String getIdString() {
         return String.valueOf(id);
     }

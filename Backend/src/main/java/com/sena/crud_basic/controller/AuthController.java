@@ -1,8 +1,8 @@
 package com.sena.crud_basic.controller;
 
 
-import com.sena.crud_basic.Dto.LoginRequest;
-import com.sena.crud_basic.Dto.RegisterRequest;
+import com.sena.crud_basic.Dto.*;
+import com.sena.crud_basic.model.User;
 import com.sena.crud_basic.service.AuthService;
 import com.sena.crud_basic.service.TokenResponse;
 import com.sena.crud_basic.service.UserService;
@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,19 +22,31 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<TokenResponse> register(@RequestBody final RegisterRequest request) {
-        final TokenResponse token = service.register(request);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<TokenResponse> register(@RequestBody UserRegister user) {
+        System.out.print("Security Filter Chain <UNK>");
+        var res = authService.register(user);
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody final LoginRequest request) {
-        final TokenResponse token = service.login(request);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<TokenResponse> login(@RequestBody UserLogin user) {
+        TokenResponse res = authService.login(user);
+        return ResponseEntity.ok(res);
     }
 
-    @PostMapping("/refresh")
-    public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
-        return service.refreshToken(authHeader);
+    @GetMapping
+    public List<User> getAllUser() {
+        return userService.getAllUser();
     }
+
+    @PutMapping
+    public ResponseDto updateUser(@RequestBody UserDto userDto) {
+        return userService.updateUser(userDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseDto deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id);
+    }
+
 }

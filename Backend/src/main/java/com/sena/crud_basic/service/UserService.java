@@ -65,15 +65,6 @@ public class UserService {
                 }
             }
 
-            // Validar rol si se está cambiando
-            if (userDto.getRol() != existingUser.getUser_rol().getId()) {
-                Optional<Rol> rolOptional = rolRespository.findById(userDto.getRol());
-                if (rolOptional.isEmpty()) {
-                    return new ResponseDto("ERROR", "El rol especificado no existe");
-                }
-                existingUser.setUser_rol(rolOptional.get());
-            }
-
             // Actualizar campos
             existingUser.setName(userDto.getName());
             existingUser.setEmail(userDto.getEmail());
@@ -114,7 +105,7 @@ public class UserService {
 
     private UserDto convertToDto(User user) {
         UserDto dto = new UserDto();
-        dto.setId(user.getId());
+        dto.setId((int) user.getId());
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setPassword(user.getPassword()); // Incluye password por ahora
