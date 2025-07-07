@@ -24,7 +24,7 @@ public class JwtService {
 
     public String extractUsername(final String token) {
         final Claims jwtToken = Jwts.parser()
-                .verifyWith(getSingInKey())
+                .verifyWith(getSignInKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -46,11 +46,11 @@ public class JwtService {
                 .subject(user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSingInKey())
+                .signWith(getSignInKey())
                 .compact();
     }
 
-    private SecretKey getSingInKey() {
+    private SecretKey getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -61,14 +61,12 @@ public class JwtService {
 
     private Date extractExpiration(final String token) {
         final Claims jwtToken = Jwts.parser()
-                .verifyWith(getSingInKey())
+                .verifyWith(getSignInKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
         return jwtToken.getExpiration();
     }
-
-
 
     public boolean isTokenValid(final String token, final User user) {
         final String username = extractUsername(token);

@@ -1,6 +1,6 @@
 package com.sena.crud_basic.service;
 
-import com.sena.crud_basic.Dto.RegisterRequest;
+import com.sena.crud_basic.Dto.TokenResponse;
 import com.sena.crud_basic.Dto.UserLogin;
 import com.sena.crud_basic.Dto.UserRegister;
 import com.sena.crud_basic.model.Token;
@@ -96,10 +96,10 @@ public class AuthService {
     }
 
     public User convertToModel(UserRegister userRegister){
-        return new User(
-                userRegister.getName(),
-                userRegister.getEmail(),
-                passwordEncoder.encode(userRegister.getPassword())
-        );
+        return User.builder()
+                .name(userRegister.getName())
+                .email(userRegister.getEmail())
+                .password(passwordEncoder.encode(userRegister.getPassword()))
+                .build();
     }
 }

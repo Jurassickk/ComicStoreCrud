@@ -4,10 +4,9 @@ package com.sena.crud_basic.controller;
 import com.sena.crud_basic.Dto.*;
 import com.sena.crud_basic.model.User;
 import com.sena.crud_basic.service.AuthService;
-import com.sena.crud_basic.service.TokenResponse;
+import com.sena.crud_basic.Dto.TokenResponse;
 import com.sena.crud_basic.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

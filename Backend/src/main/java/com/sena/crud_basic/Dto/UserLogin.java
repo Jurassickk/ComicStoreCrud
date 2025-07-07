@@ -13,10 +13,4 @@ public class UserLogin {
     public String email;
     public String password;
 
-    public String email() {
-    }
-
-    public Object password() {
-        return null;
-    }
 }

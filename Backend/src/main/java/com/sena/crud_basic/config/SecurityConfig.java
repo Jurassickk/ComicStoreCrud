@@ -11,7 +11,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -37,7 +39,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, usernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout ->
                         logout.logoutUrl("/auth/logout")
                                 .addLogoutHandler((request, response, authentication) -> {
@@ -45,21 +47,21 @@ public class SecurityConfig {
                                     logout(authHeader);
                                 })
                                 .logoutSuccessHandler((request, response, authentication) ->
-                                        securityContextLogoutHandler.clearContext())
+                                        SecurityContextHolder.clearContext())
                 );
         return http.build();
     }
 
     private void logout(final String token) {
-        if(token != null || !token.startsWith("Bearer ")) {
+        if (token == null || !token.startsWith("Bearer ")) {
             throw new IllegalStateException("Invalid token");
         }
 
         final String jwtToken = token.substring(7);
-        final Token foundToken = tokenRepository.findByToken(jwtToken)
-                .orElseThrow(() -> new IllegalStateException("Token not found"));
-        foundToken.setExpired(true);
-        foundToken.setRevoked(true);
-        tokenRepository.save(foundToken);
+        tokenRepository.findByToken(jwtToken).ifPresent(foundToken -> {
+            foundToken.setExpired(true);
+            foundToken.setRevoked(true);
+            tokenRepository.save(foundToken);
+        });
     }
 }
