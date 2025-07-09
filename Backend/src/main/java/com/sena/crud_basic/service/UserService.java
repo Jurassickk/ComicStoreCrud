@@ -102,6 +102,11 @@ public class UserService {
         }
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRespository.findByEmail(email);
+    }
+
+
 
     private UserDto convertToDto(User user) {
         UserDto dto = new UserDto();
